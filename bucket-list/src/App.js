@@ -3,10 +3,9 @@ import styled, { ThemeProvider } from 'styled-components/native';
 import theme from './theme';
 import Input from './components/Input';
 import Task from './components/Task';
-import { Button, Dimensions, Alert  } from 'react-native';
+import { Button, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from 'expo-app-loading';
-import LineButton from './components/LineButton';
 
 const Container = styled.SafeAreaView`
   flex:1;
@@ -26,6 +25,22 @@ const Title = styled.Text`
     font-size: 30px;
     font-weight: 400;
     color: ${({ theme }) => theme.title};
+    margin:10px 20px 5px;
+`;
+
+const ButtonContainer = styled.TouchableOpacity`
+
+`;
+
+const Title1 = styled.Text`
+    width:${({ width }) => width - 40}px;
+    height:50px;
+    color: ${({ theme }) => theme.title};
+    text-align: center;
+    font-size: 30px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.title};
+    align-self: flex-start;
     margin:10px 20px 5px;
 `;
 
@@ -120,34 +135,6 @@ export default function App() {
         storeData('tasks', currentTasks);  //로컬저장소에 저장
     }
 
-    //완료 항목 전체 삭제
-    const _delAllTask = ()=>{
-        const currentTasks = {...tasks};
-
-        //완료 항목
-        const completedTasks = Object.entries(currentTasks).filter(tasks=>tasks[1].completed==true);
-
-        //완료 항목이 없는 경우 확인창 띄우지 않음.
-        if(completedTasks.length <1) return ;
-        
-        const deleteCompletedItems = () => {
-            //미완료항목
-            const filteredTasks =Object.fromEntries(Object.entries(currentTasks).filter(tasks=>tasks[1].completed==false));
-            storeData('tasks',filteredTasks);
-        }
-        Alert.alert(
-            "삭제",     //경고창 제목
-            "완료 항목 전체를 삭제하시겠습니까?",       //경고창 메세지
-            [
-              {
-                text: "예",
-                onPress: () => deleteCompletedItems(),
-              },
-              { text: "아니오", onPress: () => {}}
-            ]
-          );
-    }
-
     //입력필드에 포커스가 떠났을때
     const _onBlur = () => {
         setNewTask('');
@@ -176,7 +163,7 @@ export default function App() {
                     value={newTask}
                     onChangeText = {_handleTextChange}
                     onSubmitEditing = {_addTask}
-                    onBlur={_onBlur}/>
+                    onBlur={_onBlur} />
                 <List width={width}>
                     {Object.values(tasks)
                         .reverse()
@@ -187,9 +174,9 @@ export default function App() {
                                                         updateTask={_updateTask} />)
                     }
                 </List>
-                <LineButton
-                text='완료항목 전체 삭제'
-                onPressOut={_delAllTask}/>
+                <ButtonContainer>
+                    <Title1 width={width}>완료 항목 전체 삭제</Title1>
+                </ButtonContainer>
             </Container>
         </ThemeProvider>
     );
